@@ -91,8 +91,24 @@ fillinit!(dest, x) =
         fill!(dest, reduce_empty(x.op, eltype(dest)))
     end
 
-Base.copyto!(dest::AbstractArray, x::MapReduce) =
-    mapreducedim!(x.f, x.op, fillinit!(dest, x), x.x)
+function Base.copyto!(dest::AbstractArray, x::MapReduce)
+    if ndims(dest) === ndims(x.x)
+        y = dest
+    elseif ndims(dest) === ndims(x.x) - length(x.dims)
+        newdims, dropped = foldlargs(
+            ((), (), 1),
+            size(x.x)...,
+        ) do (newdims, dropped, n), s
+            ((newdims..., n in x.dims ? 1 : s),
+             n in x.dims ? dropped : (dropped..., s),
+             n + 1)
+        end
+        @assert dropped === size(dest)  # TODO: proper error
+        y = reshape(dest, newdims)
+    end
+    mapreducedim!(x.f, x.op, fillinit!(y, x), x.x)
+    return dest
+end
 
 Broadcast.broadcasted(::typeof(identity), x::MapReduce) = x
 Broadcast.materialize!(dest, x::MapReduce) = copyto!(dest, x)
