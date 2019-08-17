@@ -1,0 +1,13 @@
+name = "ReduceDims"
+uuid = "156e1e66-3c36-4320-9dac-2520a50ccf16"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com>"]
+version = "0.1.0"
+
+[compat]
+julia = "1.1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
