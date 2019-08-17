@@ -60,13 +60,13 @@ Base.show(io::IO, ::MIME"text/plain", x::MapReduce) = show(io, x)
 @inline foldlargs(op, x) = x
 @inline foldlargs(op, x1, x2, xs...) = foldlargs(op, op(x1, x2), xs...)
 
-dims(axes::Tuple{Vararg{Union{typeof(*), typeof(:)}}}) =
+asdims(axes::Tuple{Vararg{Union{typeof(*), typeof(:)}}}) =
     foldlargs((1, ()), axes...) do (n, dims), ax
         (n + 1, ax === (*) ? (dims..., n) : dims)
     end[2]
 
 along(x::ArrayLike{N}, axes::Vararg{Union{typeof(*), typeof(:)}, N}) where N =
-    OnDims(dims(axes), x)
+    OnDims(asdims(axes), x)
 
 Base.mapreduce(f, op, x::OnDims; dims::Nothing=nothing, kwargs...) =
     MapReduce(x.dims, f, op, x.x, kwargs.data)
