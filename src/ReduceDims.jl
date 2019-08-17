@@ -2,7 +2,7 @@ module ReduceDims
 
 using Base: mapreducedim!, reduce_empty, reducedim_initarray, reducedim_init
 
-export on
+export along
 
 struct OnDims{D <: Tuple, T}
     dims::D
@@ -30,7 +30,7 @@ dims(axes::Tuple{Vararg{Union{typeof(*), typeof(:)}}}) =
         (n + 1, ax === (*) ? (dims..., n) : dims)
     end[2]
 
-on(x::ArrayLike{N}, axes::Vararg{Union{typeof(*), typeof(:)}, N}) where N =
+along(x::ArrayLike{N}, axes::Vararg{Union{typeof(*), typeof(:)}, N}) where N =
     OnDims(dims(axes), x)
 
 Base.mapreduce(f, op, x::OnDims; dims::Nothing=nothing, kwargs...) =
