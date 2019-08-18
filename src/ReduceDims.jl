@@ -122,6 +122,8 @@ along(x::ArrayLike{N}, axes::Vararg{Union{typeof(:), OpMarker}, N}) where N =
 along(x::ArrayLike{N}, axes::SpecType...) where N =
     OnDims(asdims(N, axes), x)
 
+along(x::ArrayLike, dims::Integer...) = OnDims(dims, x)
+
 Base.mapreduce(f, op, x::OnDims; dims::Nothing=nothing, kwargs...) =
     MapReduce(x.dims, f, op, x.x, kwargs.data)
 
